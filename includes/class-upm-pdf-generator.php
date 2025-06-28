@@ -65,6 +65,8 @@ class UPM_PDF_Generator {
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
+        $options->set('fontCache', UPM_PDF_PATH . 'vendor/dompdf/dompdf/lib/fonts/');
+        $options->set('defaultFont', 'Creepster-Regular');
         $dompdf->render();
 
         $upload_dir = wp_upload_dir();
