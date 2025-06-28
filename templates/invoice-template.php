@@ -38,7 +38,7 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     html, body {
         margin: 0;
         padding: 0;
-        font-family: 'Creepster-Regular';
+        font: 'Creepster-Regular';
         font-size: 13px;
         color: #1f2937;
     }
