@@ -29,6 +29,10 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     <meta charset="UTF-8">
     <title>Recibo <?= $receipt_code ?></title>
     <style>
+    @font-face {
+    font-family: 'Creepster';
+    src: url('<?= plugins_url('assets/fonts/Creepster.ttf', dirname(__FILE__, 2)) ?>') format('truetype');
+}
     * {
         box-sizing: border-box;
     }
@@ -38,7 +42,7 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     html, body {
         margin: 0;
         padding: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Creepster', cursive;
         font-size: 13px;
         color: #1f2937;
     }
