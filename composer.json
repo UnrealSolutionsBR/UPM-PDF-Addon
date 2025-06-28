@@ -1,0 +1,17 @@
+{
+    "name": "pc/unrealprojectmanager-pdfaddon",
+    "autoload": {
+        "psr-4": {
+            "Pc\\UnrealprojectmanagerPdfaddon\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "UnrealSolutionsBR",
+            "email": "hola@unrealsolutions.com.br"
+        }
+    ],
+    "require": {
+        "dompdf/dompdf": "^3.1"
+    }
+}
