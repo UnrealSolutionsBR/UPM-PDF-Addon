@@ -49,12 +49,32 @@ class UPM_PDF_Generator {
 
     public static function maybe_generate_invoice_pdf($post_id) {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (wp_is_post_revision($post_id)) return;
+        if (get_post_type($post_id) !== 'upm_invoice') return;
+
+        $project_id = get_post_meta($post_id, '_upm_invoice_project_id', true);
+
+        // Evitar duplicados si ya hay un archivo generado
+        $existing = get_posts([
+            'post_type'  => 'upm_file',
+            'meta_query' => [
+                ['key' => '_upm_file_project_id', 'value' => $project_id],
+                ['key' => '_upm_file_category', 'value' => 'Facturación'],
+                ['key' => '_upm_auto_generated', 'value' => '1']
+            ],
+            'posts_per_page' => 1
+        ]);
+        if (!empty($existing)) return;
+
         $html = self::get_invoice_template($post_id);
-        self::generate_and_save_pdf($html, 'Factura_' . $post_id . '.pdf', $post_id, 'Facturación');
+        self::generate_and_save_pdf($html, 'Factura_' . $post_id . '.pdf', $project_id, 'Facturación');
     }
 
     public static function maybe_generate_contract_pdf($post_id) {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (wp_is_post_revision($post_id)) return;
+        if (get_post_type($post_id) !== 'upm_project') return;
+
         $html = self::get_contract_template($post_id);
         self::generate_and_save_pdf($html, 'Contrato_' . $post_id . '.pdf', $post_id, 'Legal');
     }
@@ -73,7 +93,6 @@ class UPM_PDF_Generator {
         $pdf_path = $upload_dir['path'] . '/' . $filename;
         file_put_contents($pdf_path, $dompdf->output());
 
-        // Subir a WordPress
         $filetype = wp_check_filetype($filename, null);
         $attachment = [
             'post_mime_type' => $filetype['type'],
@@ -88,8 +107,7 @@ class UPM_PDF_Generator {
         $url = wp_get_attachment_url($attach_id);
         $size = size_format(filesize($pdf_path), 2);
 
-        // Registrar en CPT de archivos
-        $file_id = wp_insert_post([
+        wp_insert_post([
             'post_type'    => 'upm_file',
             'post_title'   => $filename,
             'post_status'  => 'publish',
