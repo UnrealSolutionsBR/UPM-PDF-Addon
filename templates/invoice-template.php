@@ -25,6 +25,9 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <head>
     <meta charset="UTF-8">
     <title>Recibo <?= $receipt_code ?></title>
@@ -38,8 +41,6 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     html, body {
         margin: 0;
         padding: 0;
-        font: 'Creepster-Regular';
-        font-size: 13px;
         color: #1f2937;
     }
     .wrapper {
@@ -49,6 +50,11 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         width: 120px;
         height: auto;
         margin-bottom: 10px;
+    }
+    .header-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
     h1 {
         font-size: 22px;
@@ -84,11 +90,16 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     }
     .products th, .products td {
         border: 1px solid #e5e7eb;
+        font-family: "Inter", sans-serif;
         padding: 10px;
         text-align: left;
     }
     .products th {
         background-color: #f3f4f6;
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1rem;
     }
     .total {
         text-align: right;
@@ -101,9 +112,21 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         color: #6b7280;
         margin-top: 40px;
         text-align: center;
+        font-family: "Inter", sans-serif;
     }
     .subtitle {
-        font-weight: bold;
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+    .meta-text {
+        font-family: "Inter", sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+    }
+    .meta-text-sb {
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
         font-size: 1rem;
     }
     .text-right {
@@ -114,8 +137,8 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
 <body>
     <div class="wrapper">
         <div class="header">
-            <div>
-                <img class="logotype" src="https://unrealsolutions.com.br/wp-content/uploads/2023/10/Unreal-Solutions-Logo-Black.png" alt="Unreal Solutions">
+            <img class="logotype" src="https://unrealsolutions.com.br/wp-content/uploads/2023/10/Unreal-Solutions-Logo-Black.png" alt="Unreal Solutions">
+            <div class="header-title-row">                
                 <h1>Recibo</h1>
                 <span class="badge <?= esc_attr($badge_class) ?>"><?= strtoupper($status) ?></span> 
             </div>
@@ -128,16 +151,16 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
                     <td class="subtitle text-right">Recibo de</td>
                 </tr>
                 <tr>
-                    <td><?= esc_html($client_name) ?></td>
-                    <td class="text-right">Unreal Solutions</td>
+                    <td class="meta-text-sb"><?= esc_html($client_name) ?></td>
+                    <td class="meta-text-sb text-right">Unreal Solutions</td>
                 </tr>
                 <tr>
-                    <td>Sin nombre</td>
-                    <td class="text-right">Avenida 7mo Anillo, Calle B. Casa #11</td>
+                    <td class="meta-text">Sin nombre</td>
+                    <td class="meta-text text-right">Avenida 7mo Anillo, Calle B. Casa #11</td>
                 </tr>
                 <tr>
-                    <td><?= esc_html($client_address) ?></td>
-                    <td class="text-right">Santa Cruz de la Sierra, Bolivia</td>
+                    <td class="meta-text"><?= esc_html($client_address) ?></td>
+                    <td class="meta-text text-right">Santa Cruz de la Sierra, Bolivia</td>
                 </tr>
             </table>
         </div>
@@ -145,16 +168,16 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         <div class="section">
             <table class="meta-table" style="width: 100%; margin-top: 20px;">
                 <tr>
-                    <td class="text-left"><strong>Su orden</strong></td>
-                    <td class="text-right"><strong>Método de pago:</strong> <?= $payment_method ?></td>
-                </tr>
-                <tr>
-                    <td class="text-left">Recibo #<?= $receipt_code ?></td>
-                    <td class="text-right"><strong>Moneda:</strong> <?= $currency ?></td>
-                </tr>
-                <tr>
-                    <td class="text-left"><strong>Fecha límite:</strong> <?= $due_date ?></td>
+                    <td class="subtitle"><strong>Su orden</strong></td>
                     <td></td>
+                </tr>
+                <tr>
+                    <td class="meta-text">Recibo #<?= $receipt_code ?></td>
+                    <td class="meta-text text-right"><strong>Método de pago:</strong> <?= $payment_method ?></td>
+                </tr>
+                <tr>
+                    <td class="meta-text"><strong>Fecha límite:</strong> <?= $due_date ?></td>
+                    <td class="meta-text text-right"><strong>Moneda:</strong> <?= $currency ?></td>
                 </tr>
             </table>
         </div>
