@@ -63,10 +63,11 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         font-family: 'Montserrat', sans-serif;
     }
     .badge {
+        font-family: "Inter", sans-serif;
         font-size: 10px;
-        font-weight: bold;
+        font-weight: 600;
         padding: 4px 10px;
-        border-radius: 6px;
+        border-radius: 5;
         margin-left: 10px;
         vertical-align: middle;
         color: white;
@@ -99,12 +100,13 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         font-family: 'Montserrat', sans-serif;
         text-align: center;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 12px;
     }
     .total {
+        font-family: 'Montserrat', sans-serif;
         text-align: right;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 700;
         margin-top: 15px;
     }
     .footer-text {
@@ -117,17 +119,17 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     .subtitle {
         font-family: "Inter", sans-serif;
         font-weight: 700;
-        font-size: 1rem;
+        font-size: 14px;
     }
     .meta-text {
         font-family: "Inter", sans-serif;
         font-weight: 400;
-        font-size: 1rem;
+        font-size: 12px;
     }
     .meta-text-sb {
         font-family: "Inter", sans-serif;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 12px;
     }
     .text-right {
         text-align: right;

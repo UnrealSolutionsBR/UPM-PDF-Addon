@@ -4,7 +4,7 @@
  * Description: Genera contratos y facturas PDF personalizados para Unreal Project Manager.
  * Plugin URI: https://unrealsolutions.com.br/
  * Author: Unreal Solutions
- * Version: 1.1.3
+ * Version: 1.1.4
  */
 
 defined('ABSPATH') || exit;
