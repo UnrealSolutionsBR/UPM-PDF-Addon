@@ -47,7 +47,7 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         padding: 20px;
     }
     .logotype {
-        width: 130px;
+        width: 140px;
         height: auto;
         margin-bottom: 10px;
     }
