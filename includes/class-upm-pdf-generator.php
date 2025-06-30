@@ -9,8 +9,12 @@ class UPM_PDF_Generator {
         require_once UPM_PDF_PATH . 'vendor/autoload.php';
 
         add_action('add_meta_boxes', [__CLASS__, 'add_pdf_meta_boxes']);
-        add_action('save_post_upm_invoice', [__CLASS__, 'maybe_generate_invoice_pdf']);
-        add_action('save_post_upm_project', [__CLASS__, 'maybe_generate_contract_pdf']);
+        add_action('save_post_upm_invoice', [__CLASS__, 'maybe_schedule_invoice_pdf']);
+        add_action('save_post_upm_project', [__CLASS__, 'maybe_schedule_contract_pdf']);
+
+        // Hooks para tareas asincrónicas
+        add_action('upm_generate_invoice_pdf_event', [__CLASS__, 'handle_invoice_pdf_event']);
+        add_action('upm_generate_contract_pdf_event', [__CLASS__, 'handle_contract_pdf_event']);
     }
 
     public static function add_pdf_meta_boxes() {
@@ -47,14 +51,30 @@ class UPM_PDF_Generator {
         }
     }
 
-    public static function maybe_generate_invoice_pdf($post_id) {
+    public static function maybe_schedule_invoice_pdf($post_id) {
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         if (wp_is_post_revision($post_id)) return;
         if (get_post_type($post_id) !== 'upm_invoice') return;
 
+        if (!wp_next_scheduled('upm_generate_invoice_pdf_event', [$post_id])) {
+            wp_schedule_single_event(time() + 2, 'upm_generate_invoice_pdf_event', [$post_id]);
+        }
+    }
+
+    public static function maybe_schedule_contract_pdf($post_id) {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (wp_is_post_revision($post_id)) return;
+        if (get_post_type($post_id) !== 'upm_project') return;
+
+        if (!wp_next_scheduled('upm_generate_contract_pdf_event', [$post_id])) {
+            wp_schedule_single_event(time() + 2, 'upm_generate_contract_pdf_event', [$post_id]);
+        }
+    }
+
+    public static function handle_invoice_pdf_event($post_id) {
         $project_id = get_post_meta($post_id, '_upm_invoice_project_id', true);
 
-        // Evitar duplicados si ya hay un archivo generado
+        // Verificar si ya existe un PDF
         $existing = get_posts([
             'post_type'  => 'upm_file',
             'meta_query' => [
@@ -70,11 +90,7 @@ class UPM_PDF_Generator {
         self::generate_and_save_pdf($html, 'Factura_' . $post_id . '.pdf', $project_id, 'Facturación');
     }
 
-    public static function maybe_generate_contract_pdf($post_id) {
-        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-        if (wp_is_post_revision($post_id)) return;
-        if (get_post_type($post_id) !== 'upm_project') return;
-
+    public static function handle_contract_pdf_event($post_id) {
         $html = self::get_contract_template($post_id);
         self::generate_and_save_pdf($html, 'Contrato_' . $post_id . '.pdf', $post_id, 'Legal');
     }
