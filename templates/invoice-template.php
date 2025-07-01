@@ -57,7 +57,7 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         gap: 10px;
     }
     h1 {
-        font-size: 22px;
+        font-size: 32px;
         color: #111827;
         margin: 0;
         font-family: 'Montserrat', sans-serif;
@@ -93,19 +93,19 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
         border: 1px solid #e5e7eb;
         font-family: "Inter", sans-serif;
         padding: 10px;
-        text-align: left;
+        font-size: 14px;
     }
     .products th {
         background-color: #f3f4f6;
         font-family: 'Montserrat', sans-serif;
         text-align: center;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 16px;
     }
     .total {
         font-family: 'Montserrat', sans-serif;
         text-align: right;
-        font-size: 16px;
+        font-size: 22px;
         font-weight: 700;
         margin-top: 15px;
     }
@@ -119,19 +119,28 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
     .subtitle {
         font-family: "Inter", sans-serif;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 19.5px;
     }
     .meta-text {
         font-family: "Inter", sans-serif;
         font-weight: 400;
-        font-size: 12px;
+        font-size: 16.8px;
     }
     .meta-text-sb {
         font-family: "Inter", sans-serif;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 16.8px;
     }
     .text-right {
+        text-align: right;
+    }
+    .product-title {
+        text-align: left;
+    }
+    .product-amount {
+        text-align: center;
+    }
+    .product-price {
         text-align: right;
     }
     </style>
@@ -194,14 +203,18 @@ if (strtolower($status) === 'pagada' || strtolower($status) === 'pagado') {
             </thead>
             <tbody>
                 <tr>
-                    <td><?= esc_html($project_title) ?></td>
-                    <td>1</td>
-                    <td><?= $currency ?> <?= number_format($amount, 2, '.', ',') ?></td>
+                    <td class="product-title"><?= esc_html($project_title) ?></td>
+                    <td class="product-amount">1</td>
+                    <td class="product-price"><?= $currency ?> <?= number_format($amount, 2, '.', ',') ?></td>
                 </tr>
             </tbody>
         </table>
-
-        <p class="total"><?= $currency ?> <?= number_format($amount, 2, '.', ',') ?></p>
+        <table class="total">
+            <tr>
+                <td>SU ORDEN</td>
+                <td class="text-right"><?= $currency ?> <?= number_format($amount, 2, '.', ',') ?></td>
+            </tr>
+        </table>
 
         <p class="footer-text">
             Si tiene algún problema con su orden (ejemplo: no reconoce el cobro o sospecha de fraude) por favor entre en contacto con: hola@unrealsolutions.com.br
