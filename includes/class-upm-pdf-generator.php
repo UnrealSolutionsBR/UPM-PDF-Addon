@@ -56,9 +56,12 @@ class UPM_PDF_Generator {
         if (wp_is_post_revision($post_id)) return;
         if (get_post_type($post_id) !== 'upm_invoice') return;
 
-        if (!wp_next_scheduled('upm_generate_invoice_pdf_event', [$post_id])) {
-            wp_schedule_single_event(time() + 2, 'upm_generate_invoice_pdf_event', [$post_id]);
-        }
+        // 🔁 Esperar hasta el final del ciclo para programar la tarea (evita duplicados y datos incompletos)
+        add_action('shutdown', function () use ($post_id) {
+            if (!wp_next_scheduled('upm_generate_invoice_pdf_event', [$post_id])) {
+                wp_schedule_single_event(time() + 2, 'upm_generate_invoice_pdf_event', [$post_id]);
+            }
+        });
     }
 
     public static function maybe_schedule_contract_pdf($post_id) {
@@ -66,33 +69,32 @@ class UPM_PDF_Generator {
         if (wp_is_post_revision($post_id)) return;
         if (get_post_type($post_id) !== 'upm_project') return;
 
-        if (!wp_next_scheduled('upm_generate_contract_pdf_event', [$post_id])) {
-            wp_schedule_single_event(time() + 2, 'upm_generate_contract_pdf_event', [$post_id]);
-        }
+        add_action('shutdown', function () use ($post_id) {
+            if (!wp_next_scheduled('upm_generate_contract_pdf_event', [$post_id])) {
+                wp_schedule_single_event(time() + 2, 'upm_generate_contract_pdf_event', [$post_id]);
+            }
+        });
     }
 
     public static function handle_invoice_pdf_event($post_id) {
         $project_id = get_post_meta($post_id, '_upm_invoice_project_id', true);
 
-        // Verificar si ya existe un PDF
-        $existing = get_posts([
-            'post_type'  => 'upm_file',
-            'meta_query' => [
-                ['key' => '_upm_file_project_id', 'value' => $project_id],
-                ['key' => '_upm_file_category', 'value' => 'Facturación'],
-                ['key' => '_upm_auto_generated', 'value' => '1']
-            ],
-            'posts_per_page' => 1
-        ]);
-        if (!empty($existing)) return;
+        // Verificar si ya existe un PDF por título
+        $filename = 'Factura_' . $post_id . '.pdf';
+        $existing_by_title = get_page_by_title($filename, OBJECT, 'upm_file');
+        if ($existing_by_title) return;
 
         $html = self::get_invoice_template($post_id);
-        self::generate_and_save_pdf($html, 'Factura_' . $post_id . '.pdf', $project_id, 'Facturación');
+        self::generate_and_save_pdf($html, $filename, $project_id, 'Facturación');
     }
 
     public static function handle_contract_pdf_event($post_id) {
+        $filename = 'Contrato_' . $post_id . '.pdf';
+        $existing_by_title = get_page_by_title($filename, OBJECT, 'upm_file');
+        if ($existing_by_title) return;
+
         $html = self::get_contract_template($post_id);
-        self::generate_and_save_pdf($html, 'Contrato_' . $post_id . '.pdf', $post_id, 'Legal');
+        self::generate_and_save_pdf($html, $filename, $post_id, 'Legal');
     }
 
     private static function generate_and_save_pdf($html, $filename, $project_id, $category) {
